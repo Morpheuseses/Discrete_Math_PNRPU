@@ -76,7 +76,8 @@ public:
         }
 
     }
-    void printMtx(vector<vector<int>> mtx) {
+    template <class T>
+    void printMtx(vector<vector<T>> mtx) {
         if (mtx.size() == 0) {
             cout << "There is no links in graph" << endl;
             return;
@@ -108,6 +109,20 @@ public:
 
         return res;
     }
+    vector<vector<char>> getComponentsChar(vector<vector<int>> mtx) {
+
+        vector<vector<char>> res = vector<vector<char>>(mtx.size());
+
+        for (int i = 0; i < mtx.size(); i++) {
+            for (int j = 0; j < mtx[0].size(); j++) {
+                if (mtx[i][j] != 0) {
+                    res[i].push_back(vertices[j]);
+                }
+            }
+        }
+        return res;
+    }
+
 private:
     vector<vector<int>> getStrongConnectivity(vector<vector<int>> mtx) {
         auto res = mtx;
@@ -130,8 +145,13 @@ private:
             }
         }
         auto mult = curr;
+        cout << "Getting reachability matrix:  " << endl;
+        cout << "Original matrix + identity matrix: " << endl;
+        int iteration = 1;        
         printMtx(curr);
+
         while (curr != prev) {
+            cout << "Iteration: "<< iteration++ << endl;
             prev = curr;
             curr = multMtx(curr, mult);
             printMtx(curr);
@@ -161,25 +181,15 @@ private:
 };
 
 int main() {
-    //vector<char> vertices = {'A', 'B', 'C', 'D'};
-
-    //Graph graph(vertices);
-    /*
-    vector<vector<int>> mtx = {
-            {0, 1, 1, 0},
-            {0, 0, 0, 0},
-            {0, 1, 0, 1},
-            {0, 0, 1, 0}
-    };
-    */
     std::string file_dir = "./m1.txt";
-
+    cout << "Matrix file: " << file_dir << endl;
     Graph graph(file_dir);
-    
-    // graph.setMatrix(mtx);
 
     auto vec = graph.get_component();
+    // graph.printMtx(vec);
+    auto components = graph.getComponentsChar(vec);
+    cout << "Components of the graph: " << endl;
+    graph.printMtx(components);
 
-    graph.printMtx(vec);
     return 0;
 }
