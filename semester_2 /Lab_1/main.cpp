@@ -9,7 +9,7 @@ using namespace std;
 class Graph {
     vector<vector<int>> adjmatrix;
     vector<char> vertices;
-    int vert_num = 7;
+    int vert_num = 10;
 
 public:
     Graph(vector<char> vertices) {
@@ -23,7 +23,7 @@ public:
         }
         else {
             int input;
-            this->adjmatrix = vector<vector<int>>(7, vector<int>(7, 0));
+            this->adjmatrix = vector<vector<int>>(vert_num, vector<int>(vert_num, 0));
 
             for (int i = 0; i < vert_num; i++) {
                 for (int j = 0; j < vert_num; j++) {
@@ -122,6 +122,19 @@ public:
         }
         return res;
     }
+    vector<vector<int>> getComponentsInt(vector<vector<int>> mtx) {
+
+        vector<vector<int>> res = vector<vector<int>>(mtx.size());
+
+        for (int i = 0; i < mtx.size(); i++) {
+            for (int j = 0; j < mtx[0].size(); j++) {
+                if (mtx[i][j] != 0) {
+                    res[i].push_back(j+1);
+                }
+            }
+        }
+        return res;
+    }
 
 private:
     vector<vector<int>> getStrongConnectivity(vector<vector<int>> mtx) {
@@ -181,15 +194,18 @@ private:
 };
 
 int main() {
-    std::string file_dir = "./m1.txt";
+    std::string file_dir = "./m2.txt";
     cout << "Matrix file: " << file_dir << endl;
     Graph graph(file_dir);
 
+
+    graph.printMtx();
     auto vec = graph.get_component();
     // graph.printMtx(vec);
     auto components = graph.getComponentsChar(vec);
-    cout << "Components of the graph: " << endl;
+    cout << "Components of the graph(chars): " << endl;
     graph.printMtx(components);
-
+    cout << "Components of the graph: " << endl;
+    graph.printMtx(graph.getComponentsInt(vec));
     return 0;
 }
