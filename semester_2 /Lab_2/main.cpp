@@ -2,6 +2,7 @@
 #include <vector>
 #include <fstream>
 #include <string>
+#include <queue>
 using namespace std;
 
 class Graph {
@@ -112,16 +113,16 @@ public:
 
         //printMtx(edges);
 
-        vector<vector<int>> new_tree = vector<vector<int>>(adjmatrix.size(), vector<int>(adjmatrix.size(), 0));
+        vector<vector<int>> new_tree; //vector<vector<int>>(adjmatrix.size(), vector<int>(adjmatrix.size(), 0));
 
         vector<bool> usedVerteces = vector<bool>(vert_num, false);
 
         for (int i = 0; i < edges.size() && !isboolVecTrue(usedVerteces); i++) {
             if (usedVerteces[edges[i][0]] == false || usedVerteces[edges[i][1]] == false) {
-                new_tree[edges[i][0]][edges[i][1]] = edges[i][2];
-                new_tree[edges[i][1]][edges[i][0]] = edges[i][2];
+                //new_tree[edges[i][0]][edges[i][1]] = edges[i][2];
+                //new_tree[edges[i][1]][edges[i][0]] = edges[i][2];
 
-                //new_tree.push_back(edges[i]);
+                new_tree.push_back(edges[i]);
 
                 usedVerteces[edges[i][0]] = true;
                 usedVerteces[edges[i][1]] = true;
@@ -130,58 +131,42 @@ public:
 
         return new_tree;
     }
-    
+
     vector<vector<int>> getPrim_tree() {
-        // find min
-        int min_i, min_j, min;
 
-        min = 10000;
+        vector<vector<int>> new_tree;
 
-        for (int i = 0; i < adjmatrix.size(); i++) {
-            for (int j = 0; j < adjmatrix.size(); j++) {
+        vector<bool> usedVerteces = vector<bool>(adjmatrix.size(), false);
 
-                if (adjmatrix[i][j] < min && i != j) {
-                    min = adjmatrix[i][j];
-                    min_i = i;
-                    min_j = j;
-                }
+        int e = 0;
 
-            }
-        }
+        usedVerteces[0] = true;
+        while (e < vert_num - 1) {
+            
+            int min = 10000;
+            int min_i = 0;
+            int min_j = 0;
 
-        vector<vector<int>> new_tree = vector<vector<int>>(adjmatrix.size(), vector<int>(adjmatrix.size(), 0));
-
-
-        vector<bool> usedVerteces = vector<bool>(vert_num, false);
-
-        new_tree[min_i][min_j] = min;
-        new_tree[min_j][min_i] = min;
-
-        usedVerteces[min_i] = true;
-        usedVerteces[min_j] = true;
-        min_i = min_j;
-
-        auto adjmtx = this->adjmatrix;
-        while (!isboolVecTrue(usedVerteces)) {
-            min = 10000;
-            for (int i = 0; i < adjmtx.size(); i++) {
-                if (adjmtx[min_i][i] < min && min_i != i) {
-                    min = adjmtx[min_i][i];
-                    min_j = i;
-                    adjmtx[min_i][i] = 10001;
+            for (int i = 0; i < vert_num; i++) {
+                if (usedVerteces[i]) {
+                    for (int j = 0; j < vert_num; j++) {
+                        if (!usedVerteces[j]) {
+                            if (min > adjmatrix[i][j]) {
+                                min = adjmatrix[i][j];
+                                min_i = i;
+                                min_j = j;
+                            }
+                        }
+                    }
                 }
             }
-            if (usedVerteces[min_i] == false || usedVerteces[min_j] == false) {
-                new_tree[min_i][min_j] = min;
-                new_tree[min_j][min_i] = min;
-
-                usedVerteces[min_j] = true;
-            }
-            min_i = min_j;
+            
+            new_tree.push_back({min_i, min_j, min});
+            usedVerteces[min_j] = true;
+            e++;
         }
-
         return new_tree;
-    }
+    }   
 
 private:
     //
@@ -241,7 +226,7 @@ int main() {
 
     graph.printMtx();
 
-   // graph.printMtx(graph.getPrim_tree());
+   graph.printMtx(graph.getPrim_tree());
 
     graph.printMtx(graph.getKruscal_tree());
 
