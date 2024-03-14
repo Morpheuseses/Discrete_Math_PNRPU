@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string>
 #include <queue>
+#include <unordered_map>
 using namespace std;
 
 class Graph {
@@ -167,7 +168,24 @@ public:
         }
         return new_tree;
     }   
+    void getWeight() {
+        auto e1 = this->getPrim_tree();
+        auto e2 = this->getKruscal_tree();
 
+        int w1 = 0;
+        int w2 = 0;
+
+        for (int i = 0; i < e1.size(); i++) {
+            w1 += e1[i][2];
+        }
+        cout << "Weight from Prim algorithm:" << w1 << endl; 
+        printMtx(e1);
+        for (int i = 0; i < e2.size(); i++) {
+            w2 += e2[i][2];
+        }
+        cout << "Weight from Kruscal algorithm:" << w2 << endl; 
+        printMtx(e2);
+    }
 private:
     //
     // hidden methods 
@@ -226,9 +244,11 @@ int main() {
 
     graph.printMtx();
 
-   graph.printMtx(graph.getPrim_tree());
+    //graph.printMtx(graph.getPrim_tree());
 
-    graph.printMtx(graph.getKruscal_tree());
+    //graph.printMtx(graph.getKruscal_tree());
+
+    graph.getWeight();
 
     return 0;
 }
