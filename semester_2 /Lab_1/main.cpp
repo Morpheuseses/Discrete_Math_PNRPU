@@ -194,7 +194,7 @@ private:
 };
 
 int main() {
-    std::string file_dir = "./m2.txt";
+    std::string file_dir = "./g14.txt";
     cout << "Matrix file: " << file_dir << endl;
     Graph graph(file_dir);
 

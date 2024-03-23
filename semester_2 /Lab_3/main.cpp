@@ -44,7 +44,7 @@ int main() {
 
     GPainter painter;
     auto cmap = painter.paint(graph);
-
+    cout << "color map: " << endl;
     painter.printMap(cmap);
     return 0;
 }

@@ -6,6 +6,49 @@
 #include <unordered_map>
 using namespace std;
 
+
+
+class DSU {
+    int* parent;
+    int* rank;
+public:
+    DSU(int n) {
+        parent = new int[n];
+        rank = new int[n];
+
+        for (int i = 0; i < n; i++) {
+            parent[i] = -1;
+            rank[i] = 1;
+        }
+    }
+
+    int find(int i) {
+        if (parent[i] == -1) {
+            return i;
+        }
+        return parent[i] = find(parent[i]);
+    }
+
+    void unite(int x, int y) {
+        int s1 = find(x);
+        int s2 = find(y);
+
+        if (s1 != s2) {
+            if (rank[s1] < rank[s2]) {
+                parent[s1] = s2;
+            }
+            else if (rank[s1] > rank[s2]) {
+                parent[s2] = s1;
+            }
+            else {
+            parent[s2] = s1;
+            rank[s1] += 1;
+            }
+        }
+    }
+
+};
+
 class Graph {
 private:
     vector<vector<int>> adjmatrix;
@@ -112,21 +155,18 @@ public:
 
         vector<vector<int>> edges = sortvec(edges_values, edges_indices);
 
+        DSU s(this->adjmatrix.size());
         //printMtx(edges);
 
         vector<vector<int>> new_tree; //vector<vector<int>>(adjmatrix.size(), vector<int>(adjmatrix.size(), 0));
 
         vector<bool> usedVerteces = vector<bool>(vert_num, false);
 
-        for (int i = 0; i < edges.size() && !isboolVecTrue(usedVerteces); i++) {
-            if (usedVerteces[edges[i][0]] == false || usedVerteces[edges[i][1]] == false) {
-                //new_tree[edges[i][0]][edges[i][1]] = edges[i][2];
-                //new_tree[edges[i][1]][edges[i][0]] = edges[i][2];
-
+        for (int i = 0; i < edges.size(); i++) {
+            if (s.find(edges[i][0]) != s.find(edges[i][1]) && edges[i][2] != 0) {
+                s.unite(edges[i][0], edges[i][1]);
+                s.unite(edges[i][1], edges[i][0]);
                 new_tree.push_back(edges[i]);
-
-                usedVerteces[edges[i][0]] = true;
-                usedVerteces[edges[i][1]] = true;
             }
         }
 
@@ -152,7 +192,7 @@ public:
                 if (usedVerteces[i]) {
                     for (int j = 0; j < vert_num; j++) {
                         if (!usedVerteces[j]) {
-                            if (min > adjmatrix[i][j]) {
+                            if (min > adjmatrix[i][j] && adjmatrix[i][j] != 0) {
                                 min = adjmatrix[i][j];
                                 min_i = i;
                                 min_j = j;
@@ -237,8 +277,8 @@ private:
 
 
 int main() {
-    string file_dir = "./m2.txt";
-    int vert_num = 4;
+    string file_dir = "./g23.txt";
+    int vert_num = 10;
 
     Graph graph(vert_num, file_dir);
 
