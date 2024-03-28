@@ -38,7 +38,7 @@ public:
 
 int main() {
 
-    Graph graph(10, "./tests/g33.txt");
+    Graph graph(4, "./tests/test_m.txt");
 
     graph.printMatrix();
 
@@ -148,7 +148,7 @@ vector<int> Graph::getNbrs(int vertex) {
 }
 
 map<int, vector<int>> GPainter::paint(Graph graph) {
-    int colors = 4; // nubmer of colors we going to use 
+    int colors = 100; // nubmer of colors we going to use 
     queue<int> q; // we're gonna to realize BFS here 
 
     vector<bool> used_colors = vector<bool>(colors, false);
@@ -159,6 +159,10 @@ map<int, vector<int>> GPainter::paint(Graph graph) {
     visited[0] = true;
 
     map<int, vector<int>> color_map;
+
+    for (int i = 0; i < colors; i++) {
+        
+    }
 
     vector<int> vertex_color =  vector<int>(graph.adjmatrix.size(), -1);
 
@@ -172,26 +176,18 @@ map<int, vector<int>> GPainter::paint(Graph graph) {
         for (int i = 0; i < adjacent_verticies.size(); i++) {
             if (vertex_color[adjacent_verticies[i]] != -1) {
                 used_colors[vertex_color[adjacent_verticies[i]]] = true;
+                if (color_map.find(i) == color_map.end())
+                    color_map.insert({i, {}});
             }
 
         }
-        bool isFoundColor = false;
 
         for (int i = 0; i < colors; i++) {
             if (used_colors[i] == false) {
                 vertex_color[vertex] = i;
-                if (color_map.find(i) == color_map.end())
-                    color_map.insert({i, {}});
                 color_map[i].push_back(vertex);
-                isFoundColor = true;
                 break;
             }
-        } 
-        if (isFoundColor == false) {
-            color_map[colors+1] = {};
-            color_map[colors+1].push_back(vertex);
-            colors++;
-            vertex_color[vertex] = colors;
         }
 
         for (auto nbr : adjacent_verticies) {
