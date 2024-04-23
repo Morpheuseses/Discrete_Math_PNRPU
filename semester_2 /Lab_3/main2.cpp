@@ -38,7 +38,7 @@ public:
 
 int main() {
 
-    Graph graph(4, "./tests/test_m.txt");
+    Graph graph(10, "./tests/g32.txt");
 
     graph.printMatrix();
 
